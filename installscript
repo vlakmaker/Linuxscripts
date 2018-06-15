@@ -1,0 +1,63 @@
+#!/bin/bash
+#Install Wget*
+echo "Installing Wget"
+apt install wget
+
+#Install Plex Media Server
+echo "Installing Plex Media Server"
+wget https://downloads.plex.tv/plex-media-server/1.5.5.3634-995f1dead/plexmediaserver_1.5.5.3634-995f1dead_amd64.deb
+sudo dpkg -i plexmediaserver*.deb
+
+echo "Restarting Plex Media Server"
+sudo systemctl enable plexmediaserver.service
+sudo systemctl start plexmediaserver.service
+
+#Install Teamviewer
+echo "Installing Teamviewer"
+wget http://download.teamviewer.com/download/teamviewer_i386.deb
+dpkg -i teamviewer_i386.deb
+apt-get install -f -y
+rm -rf teamviewer_i386.deb
+
+#Install git
+echo "Installing Git, please congiure git later..."
+apt install git -y
+
+#Install Guacamole
+echo "installing Apache Guacamole"
+sudo apt-get install libcairo2-dev libjpeg62-dev libpng12-dev libossp-uuid-dev libfreerdp-dev libpango1.0-dev libssh2-1-dev libssh-dev tomcat7 tomcat7-admin tomcat7-user 
+sudo wget http://sourceforge.net/projects/guacamole/files/current/source/guacamole-server-0.9.9.tar.gz
+sudo tar zxf guacamole-server-0.9.9.tar.gz 
+cd guacamole-server-0.9.9 
+sudo ./configure
+sudo make
+sudo make install
+sudo ldconfig
+cd /var/lib/tomcat7
+sudo wget http://sourceforge.net/projects/guacamole/files/current/binary/guacamole-0.9.9.war
+sudo mv guacamole-0.9.9.war guacamole.war
+sudo mkdir /etc/guacamole
+sudo mkdir /usr/share/tomcat7/.guacamole
+sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat7/.guacamole/
+sudo chmod 600 /etc/guacamole/user-mapping.xml
+sudo chown tomcat7:tomcat7 /etc/guacamole/user-mapping.xml
+
+#Install Virtualbox
+echo "installing Virtualbox"
+sudo apt-get install virtualbox
+sudo apt install virtualbox-ext-pack
+sudo apt install virtualbox virtualbox-ext-pack
+sudo apt install virtualbox-qt
+
+#Install XRDP
+echo "Installing XRDP"
+sudo apt-get install xrdp
+apt-get install xfce4
+echo > ~/.xsession
+/etc/init.d/xrdp start
+/etc/init.d/xrdp status
+sudo apt-get update
+sudo apt-get install mate-core mate-desktop-environment mate-notification-daemon
+sudo sed -i.bak '/fi/a #xrdp multiple users configuration \n mate-session \n' /etc/xrdp/startwm.sh
+
+
